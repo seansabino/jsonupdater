@@ -5,7 +5,7 @@ import json
 def set_nested_value(data, keys, value):
     """Set a value in a nested object in data based on a list of keys."""
     for key in keys[:-1]:
-        data = data.get(key, {})  # Safely get the nested dictionary
+        data = data[key]
     data[keys[-1]] = value
 
 # Streamlit app
@@ -13,7 +13,7 @@ st.title("JSON Updater App")
 
 # Upload JSON file
 json_file = st.file_uploader("Upload JSON File", type="json")
-csv_file = st.file_uploader("Upload CSV File (Location in JSON, URL)", type="csv")
+csv_file = st.file_uploader("Upload CSV File (Location in JSON, Updated Text)", type="csv")
 
 if json_file and csv_file:
     # Read JSON
@@ -25,10 +25,10 @@ if json_file and csv_file:
     # Process the CSV and update JSON
     for index, row in df.iterrows():
         location = row['Location in JSON']
-        url = row['URL']
+        updated_text = row['Updated Text']  # Replacing "URL" with "Updated Text"
         keys = location.split('.')
         try:
-            set_nested_value(data, keys, url)
+            set_nested_value(data, keys, updated_text)
         except KeyError:
             st.error(f"KeyError: '{location}' not found in JSON")
 
